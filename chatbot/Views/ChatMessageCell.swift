@@ -27,11 +27,17 @@ class ChatMessageCell: UITableViewCell {
     }
     
     func configure(with message: ChatMessage) {
+        print(message.message)
         messageLabel.text = message.message
         if message.senderType == .bot {
-            iconView.backgroundColor = .systemGray6
-            iconImageView.image = UIImage(systemName: "person.fill.questionmark")
-            iconImageView.tintColor = .systemGray
+            print("uğdated")
+            self.iconView.backgroundColor = .systemGray6
+            self.iconImageView.image = UIImage(systemName: "person.fill.questionmark")
+            self.iconImageView.tintColor = .systemGray
+        } else {
+            self.iconView.backgroundColor = .systemBlue
+            self.iconImageView.image = UIImage(systemName: "person.fill")
+            self.iconImageView.tintColor = .white
         }
     }
     
