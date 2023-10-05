@@ -30,7 +30,6 @@ class ChatMessageCell: UITableViewCell {
         print(message.message)
         messageLabel.text = message.message
         if message.senderType == .bot {
-            print("uğdated")
             self.iconView.backgroundColor = .systemGray6
             self.iconImageView.image = UIImage(systemName: "person.fill.questionmark")
             self.iconImageView.tintColor = .systemGray
