@@ -35,21 +35,33 @@
                             <constraint firstAttribute="height" constant="35" id="uF6-m5-rto"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VJq-x9-GAT" userLabel="messageLabel">
-                        <rect key="frame" x="50" y="15" width="270" height="53"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="35" id="Eyz-cg-XwD"/>
-                        </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="mDa-82-Pn6">
+                        <rect key="frame" x="50" y="15" width="260" height="53"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VJq-x9-GAT" userLabel="messageLabel">
+                                <rect key="frame" x="0.0" y="0.0" width="260" height="53"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="35" id="Eyz-cg-XwD"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="atc-Po-QRW">
+                                <rect key="frame" x="0.0" y="0.0" width="260" height="250"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="4Eh-aP-YSj"/>
+                                    <constraint firstAttribute="height" constant="250" id="k6w-qz-W3W"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="top" secondItem="VJq-x9-GAT" secondAttribute="top" constant="-15" id="HcD-O2-a0E"/>
-                    <constraint firstAttribute="trailing" secondItem="VJq-x9-GAT" secondAttribute="trailing" id="ZhX-ta-LxA"/>
-                    <constraint firstAttribute="bottom" secondItem="VJq-x9-GAT" secondAttribute="bottom" constant="15" id="axe-Ne-v9C"/>
-                    <constraint firstItem="VJq-x9-GAT" firstAttribute="leading" secondItem="MLS-3b-BSJ" secondAttribute="trailing" constant="10" id="cpt-4r-XUa"/>
+                    <constraint firstAttribute="trailing" secondItem="mDa-82-Pn6" secondAttribute="trailing" constant="10" id="1nh-3J-pCB"/>
+                    <constraint firstItem="mDa-82-Pn6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="4nQ-Z4-Khy"/>
+                    <constraint firstAttribute="bottom" secondItem="mDa-82-Pn6" secondAttribute="bottom" constant="15" id="VMk-81-FO4"/>
+                    <constraint firstItem="mDa-82-Pn6" firstAttribute="leading" secondItem="MLS-3b-BSJ" secondAttribute="trailing" constant="10" id="cik-Av-tJZ"/>
                     <constraint firstItem="MLS-3b-BSJ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="dvB-LL-TX3"/>
                     <constraint firstItem="MLS-3b-BSJ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="h64-p4-HSJ"/>
                 </constraints>
@@ -59,6 +71,7 @@
                 <outlet property="iconImageView" destination="inP-aL-tGk" id="o6r-pb-vQt"/>
                 <outlet property="iconView" destination="MLS-3b-BSJ" id="eNS-JL-azd"/>
                 <outlet property="messageLabel" destination="VJq-x9-GAT" id="KoM-B1-c4c"/>
+                <outlet property="responseImageView" destination="atc-Po-QRW" id="NOx-V3-8p0"/>
             </connections>
             <point key="canvasLocation" x="138.93129770992365" y="34.154929577464792"/>
         </tableViewCell>

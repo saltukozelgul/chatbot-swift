@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ChatMessageCell: UITableViewCell {
     
     @IBOutlet private weak var messageLabel: UILabel!
     @IBOutlet private weak var timestampLabel: UILabel!
+    @IBOutlet private weak var responseImageView: UIImageView!
     @IBOutlet private weak var iconView: UIView!
     @IBOutlet private weak var iconImageView: UIImageView!
     
@@ -29,7 +31,12 @@ class ChatMessageCell: UITableViewCell {
     func configure(with message: Message) {
         messageLabel.text = message.text
         if message.imageURL != nil {
-            // TODO: Will design photo message
+            responseImageView.isHidden = false
+            messageLabel.isHidden = true
+            responseImageView.kf.setImage(with: message.imageURL!)
+        } else {
+            responseImageView.isHidden = true
+            messageLabel.isHidden = false
         }
         if message.sender != "user" {
             self.iconView.backgroundColor = .systemGray6
