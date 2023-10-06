@@ -26,10 +26,9 @@ class ChatMessageCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(with message: ChatMessage) {
-        print(message.message)
-        messageLabel.text = message.message
-        if message.senderType == .bot {
+    func configure(with message: Message) {
+        messageLabel.text = message.text
+        if message.sender != "user" {
             self.iconView.backgroundColor = .systemGray6
             self.iconImageView.image = UIImage(systemName: "person.fill.questionmark")
             self.iconImageView.tintColor = .systemGray

@@ -7,12 +7,13 @@
 
 import UIKit
 
-extension UIView {
+extension UIViewController {
     
     func navigateToChatDetail(_ chat: Chat) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let chatViewController = storyboard.instantiateViewController(withIdentifier: "ChatViewController") as! ChatViewController
         chatViewController.chat = chat
-        self.window?.rootViewController?.present(chatViewController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(chatViewController, animated: true)
+        
     }
 }

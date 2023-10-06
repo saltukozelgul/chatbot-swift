@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+enum SenderType {
+    case user
+    case bot
+}
+
