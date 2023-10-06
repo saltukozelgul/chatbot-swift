@@ -28,6 +28,9 @@ class ChatMessageCell: UITableViewCell {
     
     func configure(with message: Message) {
         messageLabel.text = message.text
+        if message.imageURL != nil {
+            // TODO: Will design photo message
+        }
         if message.sender != "user" {
             self.iconView.backgroundColor = .systemGray6
             self.iconImageView.image = UIImage(systemName: "person.fill.questionmark")

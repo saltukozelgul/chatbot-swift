@@ -38,9 +38,7 @@ class YourChatsViewController: UIViewController, UITableViewDelegate {
             self.fetchUserChats()
         }))
         self.present(alert, animated: true, completion: nil)
-        
     }
-    
     
     override func viewDidLoad()  {
         super.viewDidLoad()
@@ -62,7 +60,6 @@ class YourChatsViewController: UIViewController, UITableViewDelegate {
             print("Error fetching chat data: \(error)")
         }
     }
-    
 }
 
 extension YourChatsViewController: UITableViewDataSource {
@@ -70,16 +67,40 @@ extension YourChatsViewController: UITableViewDataSource {
         return chats.count
     }
     
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.textLabel?.text = chats[indexPath.row].title
         cell.imageView?.image = UIImage(systemName: "message.fill")
+        cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         navigateToChatDetail(chats[indexPath.row])
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let chat = chats[indexPath.row]
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, _) in
+            let context = CoreDataStack.shared.context
+            context.delete(chat)
+            // Deleting chat messages as well we can do this by sql query as well
+            let fetchRequest = NSFetchRequest<Message>(entityName: "Message")
+            fetchRequest.predicate = NSPredicate(format: "chat == %@", chat)
+            do {
+                let messages = try context.fetch(fetchRequest)
+                for message in messages {
+                    context.delete(message)
+                }
+            } catch {
+                print("Error fetching messages for chat deletion: \(error)")
+            }
+            CoreDataStack.shared.saveContext()
+            self?.fetchUserChats()
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = .systemRed
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
 

@@ -14,7 +14,7 @@ class APIClient {
     
     private let apiKey: String
     
-    private let apiUrl = "https://api.openai.com/v1/completions" // Replace with your API base URL
+    let imageGenerateCommands = ["draw", "generate image"]// Replace with your API base URL
     private var dataDecoder = JSONDecoder()
     
     private init() {
@@ -44,6 +44,7 @@ class APIClient {
     }
     
     func generateResponse(prompt: String, maxTokens: Int, temperature: Double, completion: @escaping (Result<ResponseModel, Error>) -> Void) {
+        
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(apiKey)",
             "Content-Type": "application/json"
@@ -56,9 +57,36 @@ class APIClient {
             "temperature": temperature
         ]
         
-        AF.request(apiUrl, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        AF.request(URLBuilder
+            .shared.getResponseUrl()!, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        .validate()
+        .responseDecodable(of: ResponseModel.self) { response in
+            switch response.result {
+                case .success(let responseModel):
+                    completion(.success(responseModel))
+                case .failure(let error):
+                    completion(.failure(error))
+            }
+        }
+    }
+    
+    
+    func generateImage(prompt: String, imageCount: Int, size: String, completion: @escaping (Result<ImageResponseModel, Error>) -> Void) {
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(apiKey)",
+            "Content-Type": "application/json"
+        ]
+        
+        let parameters: [String: Any] = [
+            "prompt": prompt,
+            "n": imageCount,
+            "size": size
+        ]
+        
+        AF.request(URLBuilder.shared.getImageResponseUrl()!, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
             .validate()
-            .responseDecodable(of: ResponseModel.self) { response in
+            .responseDecodable(of: ImageResponseModel.self) { response in
                 switch response.result {
                     case .success(let responseModel):
                         completion(.success(responseModel))
@@ -67,4 +95,5 @@ class APIClient {
                 }
             }
     }
+    
 }

@@ -7,6 +7,7 @@
         <relationship name="messages" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message"/>
     </entity>
     <entity name="Message" representedClassName=".Message" syncable="YES">
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="messageID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="sender" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
