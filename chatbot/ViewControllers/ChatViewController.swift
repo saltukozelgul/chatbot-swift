@@ -115,15 +115,40 @@ extension ChatViewController: UITableViewDelegate {
 // MARK - UITextFieldDelegate
 extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text, !text.isEmpty  {
-            let message = Message(context: CoreDataStack.shared.context)
-            message.text = text
-            message.timestamp = Date()
-            message.sender = "user"
-            message.chat = chat
-            chat?.lastEdited = Date()
-            CoreDataStack.shared.saveContext()
-            messages.append(message)
+        if let text = textField.text, !text.isEmpty {
+            if let chat {
+                let chatManager = ChatManager(chat: chat)
+                chatManager.addMessage(text: text, sender: "user") { result in
+                    switch result {
+                        case .success(let message):
+                            print(message)
+                            self.messages.append(message)
+                            // Request a bot response
+                            APIClient.shared.generateResponse(prompt: text, maxTokens: 100, temperature: 0.5) { result in
+                                switch result {
+                                    case .success(let response):
+                                        print(response)
+                                        // Add the bot's response
+                                        chatManager.addBotResponse(text: response.choices?[0].text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") { result in
+                                            switch result {
+                                                case .success(let botResponse):
+                                                    print(botResponse)
+                                                    self.messages.append(botResponse)
+                                                    // Update UI or perform additional actions as needed
+                                                case .failure(let error):
+                                                    print("Error adding bot response: \(error)")
+                                            }
+                                        }
+                                    case .failure(let error):
+                                        print("API Error: \(error)")
+                                }
+                            }
+                        case .failure(let error):
+                            print("Error adding user message: \(error)")
+                    }
+                }
+            }
+  
             textField.text = ""
         }
         return true

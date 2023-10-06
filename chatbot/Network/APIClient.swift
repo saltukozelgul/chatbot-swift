@@ -43,7 +43,7 @@ class APIClient {
         }
     }
     
-    func generateResponse(prompt: String, maxTokens: Int, temperature: Double, completion: @escaping (Result<String, Error>) -> Void) {
+    func generateResponse(prompt: String, maxTokens: Int, temperature: Double, completion: @escaping (Result<ResponseModel, Error>) -> Void) {
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(apiKey)",
             "Content-Type": "application/json"
@@ -58,14 +58,10 @@ class APIClient {
         
         AF.request(apiUrl, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
             .validate()
-            .responseJSON { response in
+            .responseDecodable(of: ResponseModel.self) { response in
                 switch response.result {
-                    case .success:
-                        if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-                            completion(.success(responseString))
-                        } else {
-                            completion(.failure(NSError(domain: "InvalidResponse", code: 0, userInfo: nil)))
-                        }
+                    case .success(let responseModel):
+                        completion(.success(responseModel))
                     case .failure(let error):
                         completion(.failure(error))
                 }
