@@ -10,7 +10,14 @@ import CoreData
 
 class ChatViewController: UIViewController {
     
-    var chat : Chat?
+    var chat : Chat? {
+        didSet {
+            chatManager = ChatManager(chat: chat!)
+        }
+    }
+    private var chatManager : ChatManager?
+    
+    
     
     private var messages: [Message] = [] {
         didSet {
@@ -116,8 +123,7 @@ extension ChatViewController: UITableViewDelegate {
 extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text, !text.isEmpty {
-            if let chat {
-                let chatManager = ChatManager(chat: chat)
+            if let chatManager {
                 chatManager.addMessage(text: text, sender: "user") { result in
                     switch result {
                         case .success(let message):
@@ -148,7 +154,7 @@ extension ChatViewController: UITextFieldDelegate {
                     }
                 }
             }
-  
+            
             textField.text = ""
         }
         return true
