@@ -76,11 +76,4 @@ class CoreDataStack {
         }
     }
     
-    
-    func addLoadingMessage() -> Message {
-        let loadingMessage = Message(context: CoreDataStack.shared.context)
-        loadingMessage.text = "Chatbot is typing..."
-        loadingMessage.sender = "bot"
-        return loadingMessage
-    }
 }

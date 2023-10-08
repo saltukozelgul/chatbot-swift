@@ -32,18 +32,6 @@ class APIClient {
         print(apiKey)
     }
     
-    
-    
-    func fetchData<T: Decodable>(url: URL, completion: @escaping (Result<T, AFError>) -> Void) {
-        AF.request(url).responseDecodable(of: T.self, decoder: dataDecoder) { (response) in
-            guard let data = response.value else {
-                completion(.failure(response.error ?? AFError.explicitlyCancelled))
-                return
-            }
-            completion(.success(data))
-        }
-    }
-    
     func generateResponse(prompt: String, maxTokens: Int, temperature: Double, completion: @escaping (Result<ResponseModel, Error>) -> Void) {
         
         let headers: HTTPHeaders = [
@@ -70,7 +58,6 @@ class APIClient {
             }
         }
     }
-    
     
     func generateImage(prompt: String, imageCount: Int, size: String, completion: @escaping (Result<ImageResponseModel, Error>) -> Void) {
         

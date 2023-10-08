@@ -38,6 +38,12 @@ class ChatManager {
         addMessage(text: "", url: url, sender: "bot", completion: completion)
     }
     
+    func addLoadingMessage() -> Message {
+        let loadingMessage = Message(context: CoreDataStack.shared.context)
+        loadingMessage.text = "Chatbot is typing..."
+        loadingMessage.sender = "bot"
+        return loadingMessage
+    }
     
 }
 

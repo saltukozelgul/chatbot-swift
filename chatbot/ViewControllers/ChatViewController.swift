@@ -110,7 +110,7 @@ extension ChatViewController: UITextFieldDelegate {
                             print(message)
                             self.messages.append(message)
                             // If text has any imageGenerationCommands in it
-                            self.messages.append(CoreDataStack.shared.addLoadingMessage())
+                            self.messages.append(chatManager.addLoadingMessage())
                             let commands = APIClient.shared.imageGenerateCommands
                             if commands.contains(where: { text.contains($0) }) {
                                 self.handleImageGenerationCommand(text)

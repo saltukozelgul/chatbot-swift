@@ -29,6 +29,7 @@ class ChatMessageCell: UITableViewCell {
     }
     
     func configure(with message: Message) {
+        iconView.setCornerRadius(10)
         messageLabel.text = message.text
         checkForLoading(message)
         checkForImageOrText(message)
