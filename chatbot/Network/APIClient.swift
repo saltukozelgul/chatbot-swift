@@ -13,9 +13,10 @@ class APIClient {
     static let shared = APIClient() // Singleton instance
     
     private let apiKey: String
-    
-    let imageGenerateCommands = ["draw", "generate image"]// Replace with your API base URL
     private var dataDecoder = JSONDecoder()
+    
+    // If message has any command in it bot will generate image response
+    let imageGenerateCommands = ["draw", "generate image"]
     
     private init() {
         // Load environment variables from .env file

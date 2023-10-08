@@ -20,5 +20,16 @@ extension UITableView {
         register(nib, forCellReuseIdentifier: String(describing: T.self))
     }
     
+    // If there is no item in tableView notify user with custom view
+    func setEmptyView(title: String, message: String, isCustomList: Bool = false) {
+        let emptyView = EmptyViewForTableView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height))
+        emptyView.configure(title: title, message: message, isCustomList: isCustomList)
+        self.backgroundView = emptyView
+    }
+    
+    func restoreBackground() {
+        self.backgroundView = nil
+    }
+    
 }
 

@@ -16,9 +16,6 @@ class ChatViewController: UIViewController {
         }
     }
     private var chatManager : ChatManager?
-    
-    
-    
     private var messages: [Message] = [] {
         didSet {
             tableView.reloadData()
@@ -26,6 +23,7 @@ class ChatViewController: UIViewController {
         }
         
     }
+    
     @IBOutlet private weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
@@ -48,24 +46,10 @@ class ChatViewController: UIViewController {
         // Notification setup for keyboard listen
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        fetchMessages()
-    }
-    
-    func fetchMessages () {
-        guard let chat = chat else { return }
-        let fetchRequest = NSFetchRequest<Message>(entityName: "Message")
-        let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: true) // Adjust sorting as needed
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        fetchRequest.predicate = NSPredicate(format: "chat == %@", chat)
-        do {
-            let context = CoreDataStack.shared.context // Replace with your CoreData context
-            let temp = try context.fetch(fetchRequest)
-            messages = temp
-        } catch {
-            print(error)
+        if let chat {
+            messages = CoreDataStack.shared.getMessages(chat)
         }
     }
-    
     
     @objc func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
@@ -94,6 +78,11 @@ class ChatViewController: UIViewController {
 // MARK - UITableViewDataSource
 extension ChatViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if messages.isEmpty {
+            tableView.setEmptyView(title: Strings.noMessagesTitle, message: Strings.noMessagesDetail)
+        } else {
+            tableView.restoreBackground()
+        }
         return messages.count
     }
 }
@@ -121,6 +110,7 @@ extension ChatViewController: UITextFieldDelegate {
                             print(message)
                             self.messages.append(message)
                             // If text has any imageGenerationCommands in it
+                            self.messages.append(CoreDataStack.shared.addLoadingMessage())
                             let commands = APIClient.shared.imageGenerateCommands
                             if commands.contains(where: { text.contains($0) }) {
                                 self.handleImageGenerationCommand(text)
@@ -143,23 +133,20 @@ extension ChatViewController: UITextFieldDelegate {
 extension ChatViewController {
     // Function to handle user's message with image generation commands
     func handleImageGenerationCommand(_ message: String) {
-        // Implement logic to generate an image based on the command
-        // You can call APIClient.shared.generateImage here
-        // Replace the command and parameters with your actual implementation.
         APIClient.shared.generateImage(prompt: message, imageCount: 1, size: "512x512") { result in
             switch result {
                 case .success(let response):
-                    print(response)
                     self.chatManager?.addImageResponse(url: response.data?.first?.url ?? "", completion: { result in
                         switch result {
                             case .success(let botResponse):
-                                print(botResponse)
+                                self.messages.removeLast()
                                 self.messages.append(botResponse)
                             case .failure(let error):
                                 print("Error adding bot response: \(error)")
                         }
                     })
                 case .failure(let error):
+                    self.messages.removeLast()
                     print("API Error: \(error)")
             }
         }
@@ -171,12 +158,11 @@ extension ChatViewController {
         APIClient.shared.generateResponse(prompt: message, maxTokens: 1024, temperature: 0.5) { result in
             switch result {
                 case .success(let response):
-                    print(response)
                     // Add the bot's response
                     self.chatManager?.addBotResponse(text: response.choices?[0].text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") { result in
                         switch result {
                             case .success(let botResponse):
-                                print(botResponse)
+                                self.messages.removeLast()
                                 self.messages.append(botResponse)
                                 // Update UI or perform additional actions as needed
                             case .failure(let error):
@@ -184,10 +170,10 @@ extension ChatViewController {
                         }
                     }
                 case .failure(let error):
+                    self.messages.removeLast()
                     print("API Error: \(error)")
             }
         }
     }
-    
-    
+
 }

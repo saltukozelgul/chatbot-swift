@@ -30,6 +30,18 @@ class ChatMessageCell: UITableViewCell {
     
     func configure(with message: Message) {
         messageLabel.text = message.text
+        checkForLoading(message)
+        checkForImageOrText(message)
+        checkForUserOrBot(message)
+    }
+    
+    func checkForLoading(_ message: Message) {
+        if message.text == "Chatbot is typing...." && message.sender == "bot" {
+            self.showLoading()
+        }
+    }
+    
+    func checkForImageOrText(_ message: Message) {
         if message.imageURL != nil {
             responseImageView.isHidden = false
             messageLabel.isHidden = true
@@ -38,15 +50,20 @@ class ChatMessageCell: UITableViewCell {
             responseImageView.isHidden = true
             messageLabel.isHidden = false
         }
-        if message.sender != "user" {
-            self.iconView.backgroundColor = .systemGray6
-            self.iconImageView.image = UIImage(systemName: "person.fill.questionmark")
-            self.iconImageView.tintColor = .systemGray
-        } else {
+    }
+    
+    func checkForUserOrBot(_ message: Message) {
+        if message.sender == "user" {
             self.iconView.backgroundColor = .systemBlue
             self.iconImageView.image = UIImage(systemName: "person.fill")
             self.iconImageView.tintColor = .white
+        } else {
+            self.iconView.backgroundColor = .systemGray6
+            self.iconImageView.image = UIImage(systemName: "command.circle")
+            self.iconImageView.tintColor = .systemGray
         }
     }
+    
+    
     
 }
